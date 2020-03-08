@@ -1,0 +1,603 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>dialog_settings</class>
+ <widget class="QDialog" name="dialog_settings">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>580</width>
+    <height>458</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <widget class="QDialogButtonBox" name="button_box">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>420</y>
+     <width>341</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <property name="standardButtons">
+    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+   </property>
+   <property name="centerButtons">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QTabWidget" name="tab_policy">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>20</y>
+     <width>561</width>
+     <height>391</height>
+    </rect>
+   </property>
+   <property name="currentIndex">
+    <number>0</number>
+   </property>
+   <widget class="QWidget" name="tab_general">
+    <attribute name="title">
+     <string>General</string>
+    </attribute>
+    <widget class="QWidget" name="gridLayoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>9</x>
+       <y>3</y>
+       <width>541</width>
+       <height>296</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="layout_general">
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_prefix">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Archive Prefix:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0">
+       <widget class="QLineEdit" name="line_edit_server"/>
+      </item>
+      <item row="1" column="0" colspan="2">
+       <widget class="QLineEdit" name="line_edit_repository_path"/>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_path">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Repository Path:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="1">
+       <widget class="QLineEdit" name="line_edit_port"/>
+      </item>
+      <item row="6" column="1">
+       <widget class="QLabel" name="label_port">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Port:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="label_server">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Server:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="0">
+       <widget class="QLabel" name="label_user">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Username:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_password">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Password:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" colspan="2">
+       <widget class="QLineEdit" name="line_edit_password">
+        <property name="inputMethodHints">
+         <set>Qt::ImhHiddenText|Qt::ImhNoAutoUppercase|Qt::ImhNoPredictiveText|Qt::ImhSensitiveData</set>
+        </property>
+        <property name="echoMode">
+         <enum>QLineEdit::Password</enum>
+        </property>
+        <property name="clearButtonEnabled">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0" colspan="2">
+       <widget class="QLineEdit" name="line_edit_prefix"/>
+      </item>
+      <item row="9" column="0" colspan="2">
+       <widget class="QLineEdit" name="line_edit_user"/>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tab_include">
+    <attribute name="title">
+     <string>Include</string>
+    </attribute>
+    <widget class="QWidget" name="verticalLayoutWidget_3">
+     <property name="geometry">
+      <rect>
+       <x>8</x>
+       <y>31</y>
+       <width>541</width>
+       <height>321</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="layout_include">
+      <item>
+       <widget class="QListWidget" name="list_include"/>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="layout_buttons_include">
+        <item>
+         <widget class="QPushButton" name="button_include_file">
+          <property name="text">
+           <string>Include file</string>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normaloff>../icons/plus.svg</normaloff>../icons/plus.svg</iconset>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="button_include_directory">
+          <property name="text">
+           <string>Include folder</string>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normaloff>../icons/plus.svg</normaloff>../icons/plus.svg</iconset>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="button_remove_include">
+          <property name="text">
+           <string>Remove entry</string>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normaloff>../icons/minus.svg</normaloff>../icons/minus.svg</iconset>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>8</y>
+       <width>271</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Files to be included in background backups:</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tab_exclude">
+    <attribute name="title">
+     <string>Exclude</string>
+    </attribute>
+    <widget class="QWidget" name="verticalLayoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>8</x>
+       <y>31</y>
+       <width>541</width>
+       <height>321</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="layout_exclude">
+      <item>
+       <widget class="QListWidget" name="list_exclude"/>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="layout_buttons_exclude">
+        <item>
+         <widget class="QPushButton" name="button_exclude_file">
+          <property name="text">
+           <string>Exclude file</string>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normaloff>../icons/plus.svg</normaloff>../icons/plus.svg</iconset>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="button_exclude_directory">
+          <property name="text">
+           <string>Exclude folder</string>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normaloff>../icons/plus.svg</normaloff>../icons/plus.svg</iconset>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="button_restore_exclude_defaults">
+          <property name="text">
+           <string>Restore defaults</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="button_remove_exclude">
+          <property name="text">
+           <string>Remove entry</string>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normaloff>../icons/minus.svg</normaloff>../icons/minus.svg</iconset>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QLabel" name="label_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>8</y>
+       <width>201</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Files excluded from any backups:</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tab_schedule">
+    <attribute name="title">
+     <string>Schedule</string>
+    </attribute>
+    <widget class="QWidget" name="verticalLayoutWidget_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>541</width>
+       <height>328</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="layout_schedule">
+      <item>
+       <widget class="QCheckBox" name="check_schedule_enabled">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Enable</string>
+        </property>
+        <property name="autoExclusive">
+         <bool>false</bool>
+        </property>
+        <property name="tristate">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="radio_schedule_predefined_enabled">
+        <property name="text">
+         <string>Predefined Schedule</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="combo_schedule_predefined"/>
+      </item>
+      <item>
+       <layout class="QGridLayout" name="layout_schedule_details">
+        <item row="2" column="1">
+         <widget class="QComboBox" name="combo_schedule_weekday"/>
+        </item>
+        <item row="1" column="1">
+         <widget class="QTimeEdit" name="time_schedule_time">
+          <property name="dateTime">
+           <datetime>
+            <hour>0</hour>
+            <minute>0</minute>
+            <second>0</second>
+            <year>2000</year>
+            <month>1</month>
+            <day>1</day>
+           </datetime>
+          </property>
+          <property name="displayFormat">
+           <string>hh:mm</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_schedule_weekday">
+          <property name="text">
+           <string>Weekday:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_schedule_time">
+          <property name="text">
+           <string>At:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_month">
+          <property name="text">
+           <string>Month:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QComboBox" name="combo_schedule_month"/>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="label_schedule_date">
+          <property name="text">
+           <string>Date:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QSpinBox" name="spin_schedule_date">
+          <property name="minimum">
+           <number>0</number>
+          </property>
+          <property name="maximum">
+           <number>31</number>
+          </property>
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0" colspan="2">
+         <widget class="QRadioButton" name="radio_schedule_custom_enabled">
+          <property name="text">
+           <string>Custom Schedule</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tab">
+    <attribute name="title">
+     <string>Retention Policy</string>
+    </attribute>
+    <widget class="QWidget" name="verticalLayoutWidget_4">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>541</width>
+       <height>191</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="layout_policy">
+      <item>
+       <widget class="QCheckBox" name="check_policy_enabled">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Enable</string>
+        </property>
+        <property name="autoExclusive">
+         <bool>false</bool>
+        </property>
+        <property name="tristate">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QGridLayout" name="layout_policy_details">
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_policy_daily">
+          <property name="text">
+           <string>Daily:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QSpinBox" name="spin_policy_daily">
+          <property name="minimum">
+           <number>0</number>
+          </property>
+          <property name="value">
+           <number>7</number>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QSpinBox" name="spin_policy_weekly">
+          <property name="minimum">
+           <number>0</number>
+          </property>
+          <property name="value">
+           <number>4</number>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_policy_hourly">
+          <property name="text">
+           <string>Hourly:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_policy_weekly">
+          <property name="text">
+           <string>Weekly:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_policy_monthly">
+          <property name="text">
+           <string>Monthly:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QSpinBox" name="spin_policy_monthly">
+          <property name="minimum">
+           <number>0</number>
+          </property>
+          <property name="value">
+           <number>12</number>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QSpinBox" name="spin_policy_hourly">
+          <property name="minimum">
+           <number>0</number>
+          </property>
+          <property name="value">
+           <number>24</number>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QSpinBox" name="spin_policy_yearly">
+          <property name="minimum">
+           <number>0</number>
+          </property>
+          <property name="value">
+           <number>1</number>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="label_policy_yearly">
+          <property name="text">
+           <string>Yearly:</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>button_box</sender>
+   <signal>accepted()</signal>
+   <receiver>dialog_settings</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>448</x>
+     <y>434</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>button_box</sender>
+   <signal>rejected()</signal>
+   <receiver>dialog_settings</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>516</x>
+     <y>440</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
