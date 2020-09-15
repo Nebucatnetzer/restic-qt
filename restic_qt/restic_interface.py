@@ -68,7 +68,7 @@ class InfoThread(ResticQtThread):
     """Return the statistics about the current repository."""
 
     def create_command(self):
-        self.command = ['restic', 'stats', '--json']
+        self.command = ['restic', 'stats', 'latest', '--json']
 
     def run(self):
         super().run()
@@ -78,7 +78,7 @@ class InfoThread(ResticQtThread):
     def _process_json_repo_stats(self):
         if self.json_output:
             output = json.loads(self.json_output)
-            self.stats = output['cache']['stats']
+            self.stats = output
 
 
 class BackupThread(ResticQtThread):
