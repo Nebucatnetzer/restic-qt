@@ -3,10 +3,13 @@ import sys
 import subprocess
 from time import strftime
 
+import pytest
+
 from PyQt5.QtWidgets import QApplication
 
 import restic_qt.restic_interface as restic
 from restic_qt.helper import create_path
+from restic_qt.helper import ResticException
 
 
 app = QApplication(sys.argv)
@@ -76,3 +79,14 @@ def test_prune(repository, create_archive):
     list_thread = restic.ListThread()
     repo_archives = list_thread.run()
     assert len(archive_list) > len(repo_archives)
+
+
+def test_ssh_server_not_reachable(form):
+    form.config.config['resticqt']['password'] = "foo"
+    form.config.config['resticqt']['port'] = "57683"
+    form.config.config['resticqt']['user'] = "restic"
+    form.config.config['resticqt']['server'] = "192.168.1.10"
+    form.config._set_environment_variables()
+    list_thread = restic.ListThread()
+    with pytest.raises(ResticException):
+        output = list_thread.run()
