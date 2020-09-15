@@ -28,6 +28,14 @@ def test_list(repository):
     assert str(os.path.realpath('.')) == output[0]['paths'][0]
 
 
+def test_info(repository):
+    backup_thread = restic.BackupThread(['.'])
+    backup_thread.run()
+    info_thread = restic.InfoThread()
+    output = info_thread.run()
+    assert len(output) == 2
+
+
 def test_restore(target_path, archives):
     archive_list = archives
     archive_name = archive_list[0]['short_id']
