@@ -4,9 +4,9 @@ import pytest
 import subprocess
 from shutil import copyfile
 
-import borg_qt.borg_interface as borg
-from borg_qt.main_window import MainWindow
-from borg_qt.helper import remove_path
+import restic_qt.restic_interface as restic
+from restic_qt.main_window import MainWindow
+from restic_qt.helper import remove_path
 
 
 def example_config():
@@ -27,7 +27,7 @@ def setup_config():
     tmp_path = '/tmp/test.conf'
     dir_path = os.path.dirname(os.path.realpath(__file__))
     config_path = os.path.join(dir_path,
-                               '../docs/borg_qt.conf.example')
+                               '../docs/restic_qt.conf.example')
     copyfile(config_path, tmp_path)
     yield tmp_path
     os.remove(tmp_path)
@@ -43,12 +43,10 @@ def form(setup_config, monkeypatch):
 
 @pytest.fixture(scope='session')
 def repository(tmpdir_factory):
-    repository_path = tmpdir_factory.mktemp('test-borgqt')
-    os.environ['BORG_REPO'] = repository_path.strpath
-    os.environ['BORG_PASSPHRASE'] = 'foo'
-    os.environ['BORG_DISPLAY_PASSPHRASE'] = 'no'
-    subprocess.run(['borg', 'init',
-                   '--encryption=repokey-blake2'],
+    repository_path = tmpdir_factory.mktemp('test-resticqt')
+    os.environ['RESTIC_REPOSITORY'] = repository_path.strpath
+    os.environ['RESTIC_PASSWORD'] = 'foo'
+    subprocess.run(['restic', 'init'],
                    stdout=subprocess.PIPE,
                    stderr=subprocess.PIPE)
     yield
@@ -56,9 +54,9 @@ def repository(tmpdir_factory):
 
 @pytest.fixture
 def archives(repository):
-    backup_thread = borg.BackupThread(['.'])
+    backup_thread = restic.BackupThread(['.'])
     backup_thread.run()
-    list_thread = borg.ListThread()
+    list_thread = restic.ListThread()
     output = list_thread.run()
     return output
 
@@ -72,9 +70,9 @@ def target_path(tmpdir):
 def create_archive():
     def _create_archive(number_of_turns):
         while number_of_turns > 0:
-            backup_thread = borg.BackupThread(['.'])
+            backup_thread = restic.BackupThread(['.'])
             backup_thread.run()
             number_of_turns -= 1
-        list_thread = borg.ListThread()
+        list_thread = restic.ListThread()
         return list_thread.run()
     return _create_archive

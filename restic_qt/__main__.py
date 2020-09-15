@@ -3,8 +3,8 @@
 import sys
 from PyQt5.QtWidgets import QApplication
 
-from borg_qt.main_window import MainWindow
-from borg_qt.helper import get_parser
+from restic_qt.main_window import MainWindow
+from restic_qt.helper import get_parser
 
 def main():
     app = QApplication(sys.argv)

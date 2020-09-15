@@ -1,14 +1,14 @@
 SHELL=/bin/bash
 
-.PHONY: dist/borg_qt
+.PHONY: dist/restic_qt
 
-dist/borg-qt: venv
+dist/restic-qt: venv
 	( \
 	. venv/bin/activate; \
 	pyinstaller --hidden-import=PyQt5.sip \
-		--add-data=borg_qt/static/icons:borg_qt/static/icons \
-		--add-data=borg_qt/static/UI:borg_qt/static/UI -n borg_qt\
-		-F borg_qt/__main__.py; \
+		--add-data=restic_qt/static/icons:restic_qt/static/icons \
+		--add-data=restic_qt/static/UI:restic_qt/static/UI -n restic_qt\
+		-F restic_qt/__main__.py; \
 	)
 
 venv: venv/bin/activate
@@ -25,12 +25,12 @@ init:
 	( \
 	pip3 install -r requirements.txt; \
 	pip3 install -e .; \
-	TEST_REPO=/tmp/test-borgqt; \
-	export BORG_REPO=$$TEST_REPO; \
-	export BORG_PASSPHRASE='foo'; \
+	TEST_REPO=/tmp/test-resticqt; \
+	export RESTIC_REPOSITORY=$$TEST_REPO; \
+	export RESTIC_PASSWORD='foo'; \
 	rm -rf $$TEST_REPO; \
 	mkdir $$TEST_REPO; \
-	borg init -e repokey-blake2; \
+	restic init; \
 	)
 
 test:

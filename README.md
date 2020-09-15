@@ -1,13 +1,12 @@
-# Borg-Qt
+# Restic-Qt
 
-Borg-Qt is a Python 3 based graphical frontend for the backup tool
-[BorgBackup](https://github.com/borgbackup/borg) as its name implies it is
+Restic-Qt is a Python 3 based graphical frontend for the backup tool
+[Restic](https://github.com/restic/restic) as its name implies it is
 using the Qt5 Framework. Currently it works only on Linux.
-
 
 ## Motivation
 
-I think Borg is a great backup tool which should be available to many more
+I think Restic is a great backup tool which should be available to many more
 users. Since command line tools can be a bit scary for less experienced users I
 decided to write a GUI as my "thesis" during my final semester at
 the IBZ school in Aarau, Switzerland.
@@ -19,45 +18,46 @@ local machine.
 
 ### Prerequisites
 
-You need to have Borg installed in order to have Borg-Qt working. You can get a
+You need to have Restic installed in order to have Restic-Qt working. You can get a
 binary for your operating system here:
-https://github.com/borgbackup/borg/releases
+https://github.com/restic/restic/releases
 
-On a Debian based system you can install it by copying to `~/.local/bin/`. Borg
-needs to be able to get executed by calling the command `borg`.
+On a Debian based system you can install it by copying to `~/.local/bin/`. Restic
+needs to be able to get executed by calling the command `restic`.
 
-``` bash
-cp ~/Downloads/borg-linux64 ~/.local/bin/borg
-chmod +x ~/.local/bin/borg
+```bash
+cp ~/Downloads/restic-linux64 ~/.local/bin/restic
+chmod +x ~/.local/bin/restic
 ```
 
 For other systems check their
-[documenation](https://borgbackup.readthedocs.io/en/stable/).
+[documenation](https://restic.readthedocs.io/en/stable/).
 
 ### Installing
 
-1. Installing Borg-Qt is very simple. Download the binary for your operating
-system here: <https://github.com/borgqt/borg-qt/releases> or install it with pip:
-``` bash
-pip3 install borg-qt
+1. Installing Restic-Qt is very simple. Download the binary for your operating
+   system here: <https://github.com/resticqt/restic-qt/releases> or install it with pip:
+
+```bash
+pip3 install restic-qt
 ```
 
 2. Copy the config file from
-[docs/borg_qt.conf.example](https://github.com/borg-qt/borg-qt/blob/master/docs/borg_qt.conf.example)
-to `~/.config/borg_qt/borg_qt.conf` and edit it to contain a valid path to
-your BorgBackup repository and the password. Put all your changes into the
-`[borgqt]` section. As of now there is no automated way to setup Borg-Qt.
+   [docs/restic_qt.conf.example](https://github.com/restic-qt/restic-qt/blob/master/docs/restic_qt.conf.example)
+   to `~/.config/restic_qt/restic_qt.conf` and edit it to contain a valid path to
+   your Restic repository and the password. Put all your changes into the
+   `[resticqt]` section. As of now there is no automated way to setup Restic-Qt.
 
 3. Run the binary by double clicking on it or by copying it to
-`~/.local/bin/` like Borg. If you do that you might want to create a desktop
-file for it. Puth the following code into a `borg-qt.desktop` file in
-`~/.local/share/applications/`.
+   `~/.local/bin/` like Restic. If you do that you might want to create a desktop
+   file for it. Puth the following code into a `restic-qt.desktop` file in
+   `~/.local/share/applications/`.
 
 ```
 [Desktop Entry]
 Version=1.0
-Name=Borg-Qt
-Exec=/home/username/.local/bin/borg-qt
+Name=Restic-Qt
+Exec=/home/username/.local/bin/restic-qt
 Terminal=false
 Type=Application
 Categories=Tools
@@ -66,29 +66,29 @@ MimeType=x-scheme-handler/tg;
 
 Make sure the file is executable:
 
-``` bash
-chmod +x ~/.local/share/applications/borg-qt.desktop
+```bash
+chmod +x ~/.local/share/applications/restic-qt.desktop
 ```
 
-Now you should find Borg-Qt in your desktop's start menu.
+Now you should find Restic-Qt in your desktop's start menu.
 
-If you installed Borg-Qt with pip you can either run `borg_qt` from the
-command line or edit the desktop file to exec `borg_qt` instead of the full
+If you installed Restic-Qt with pip you can either run `restic_qt` from the
+command line or edit the desktop file to exec `restic_qt` instead of the full
 path.
 
 ## Development
 
-To start working on Borg-Qt first clone the git repository and install
-BorgBackup as described in [Prerequisites].
+To start working on Restic-Qt first clone the git repository and install
+Restic as described in [Prerequisites].
 
 ```bash
-git clone https://github.com/borg-qt/borg-qt.git
+git clone https://github.com/restic-qt/restic-qt.git
 ```
 
 Now create a virtual environment.
 
 ```bash
-cd borg-qt
+cd restic-qt
 python3 -m venv venv
 ```
 
@@ -98,13 +98,13 @@ And activate it.
 source venv/bin/activate
 ```
 
-Finally you can install Borg-Qt and it's dependencies.
+Finally you can install Restic-Qt and it's dependencies.
 
 ```bash
 pip3 install -e .
 ```
 
-You're now all set to work on Borg-Qt. It's a good idea to run the tests before
+You're now all set to work on Restic-Qt. It's a good idea to run the tests before
 starting. You can do this with the following command from the root of the
 repository.
 
@@ -113,7 +113,7 @@ make test
 ```
 
 To make testing the application while programming a bit easier there's a script
-which reloads the application everytime a file changes in the `borg_qt`
+which reloads the application everytime a file changes in the `restic_qt`
 directory. You to use it run the following command from the root of the
 repository.
 
@@ -151,8 +151,8 @@ experimental.
 
 ## Authors
 
--   Andreas Zweili - *Initial work* -
-    [Nebucatnetzer](https://github.com/Nebucatnetzer)
+- Andreas Zweili - _Initial work_ -
+  [Nebucatnetzer](https://github.com/Nebucatnetzer)
 
 ## License
 
@@ -167,6 +167,5 @@ for details.
   inspiration.
 - Thanks to [Feather Icons](https://github.com/feathericons/feather) for their
   great icon set.
-- Thanks to [Kenneth Reitz](https://github.com/kennethreitz/setup.py)  for the
+- Thanks to [Kenneth Reitz](https://github.com/kennethreitz/setup.py) for the
   example repo for setup.py
-

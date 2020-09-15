@@ -1,6 +1,4 @@
-
 <table>
-
 
 <colgroup>
 <col>
@@ -158,7 +156,7 @@
 <tbody>
 <tr>
 <td>16.</td>
-<td>The application shows error of BorgBackups transparently to the user.</td>
+<td>The application shows error of Restics transparently to the user.</td>
 <td>5</td>
 <td>DONE</td>
 </tr>
@@ -167,7 +165,7 @@
 <tbody>
 <tr>
 <td>17.</td>
-<td>The application tells the user when BorgBackup is already running in the background.</td>
+<td>The application tells the user when Restic is already running in the background.</td>
 <td>5</td>
 <td>Partially</td>
 </tr>
@@ -293,7 +291,7 @@
 <tbody>
 <tr>
 <td>31.</td>
-<td>The application covers all the features of BorgBackup.</td>
+<td>The application covers all the features of Restic.</td>
 <td>2</td>
 <td>&#xa0;</td>
 </tr>
@@ -308,4 +306,3 @@
 </tr>
 </tbody>
 </table>
-

@@ -9,12 +9,12 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog, QFileDialog
 from PyQt5 import uic
 
-from borg_qt.helper import BorgException
-from borg_qt.systemd import SystemdFile
+from restic_qt.helper import ResticException
+from restic_qt.systemd import SystemdFile
 
 
 class Config(QDialog):
-    """A class to read, display and write the Borg-Qt configuration."""
+    """A class to read, display and write the Restic-Qt configuration."""
 
     def __init__(self):
         super(QDialog, self).__init__()
@@ -136,24 +136,24 @@ class Config(QDialog):
 
     def _return_single_option(self, option):
         """Gets the provided option from the configparser object."""
-        if option in self.config['borgqt']:
-            return self.config['borgqt'][option]
+        if option in self.config['resticqt']:
+            return self.config['resticqt'][option]
         else:
             return ""
 
     def _return_list_option(self, option):
         """Reads the provided option from the configparser object and returns
         it as a list."""
-        if option in self.config['borgqt']:
-            return json.loads(self.config['borgqt'][option])
+        if option in self.config['resticqt']:
+            return json.loads(self.config['resticqt'][option])
         else:
             return []
 
     def _return_dict_option(self, option):
         """Reads the provided option from the configparser object and returns
         it as a dict."""
-        if option in self.config['borgqt']:
-            return json.loads(self.config['borgqt'][option])
+        if option in self.config['resticqt']:
+            return json.loads(self.config['resticqt'][option])
         else:
             return {}
 
@@ -162,31 +162,31 @@ class Config(QDialog):
         home = os.environ['HOME']
         dir_path = os.path.dirname(os.path.realpath(__file__))
 
-        if os.path.exists(os.path.join(home, '.config/borg_qt/borg_qt.conf')):
-            return os.path.join(home, '.config/borg_qt/borg_qt.conf')
-        elif os.path.exists(os.path.join(dir_path, 'borg_qt.conf')):
-            return os.path.join(dir_path, 'borg_qt.conf')
+        if os.path.exists(os.path.join(home, '.config/restic_qt/restic_qt.conf')):
+            return os.path.join(home, '.config/restic_qt/restic_qt.conf')
+        elif os.path.exists(os.path.join(dir_path, 'restic_qt.conf')):
+            return os.path.join(dir_path, 'restic_qt.conf')
         else:
-            raise BorgException("Configuration file not found!")
+            raise ResticException("Configuration file not found!")
 
     def _set_environment_variables(self):
-        os.environ['BORG_REPO'] = self.full_path
-        os.environ['BORG_PASSPHRASE'] = self.password
+        os.environ['RESTIC_REPOSITORY'] = self.full_path
+        os.environ['RESTIC_PASSWORD'] = self.password
 
     def _create_server_path(self):
         """creates the full server path from the server, user and port
         options."""
         if not self._return_single_option('user'):
-            raise BorgException("User is missing in config.")
+            raise ResticException("User is missing in config.")
         if not self._return_single_option('port'):
-            raise BorgException("Port is missing in config.")
+            raise ResticException("Port is missing in config.")
         server_path = ('ssh://'
-                       + self.config['borgqt']['user']
+                       + self.config['resticqt']['user']
                        + "@"
-                       + self.config['borgqt']['server']
+                       + self.config['resticqt']['server']
                        + ":"
-                       + self.config['borgqt']['port']
-                       + self.config['borgqt']['repository_path'])
+                       + self.config['resticqt']['port']
+                       + self.config['resticqt']['repository_path'])
         return server_path
 
     def _select_file(self):
@@ -205,25 +205,25 @@ class Config(QDialog):
             self, "Select Directory", os.getenv('HOME'))
 
     def _create_service(self):
-        self.service = SystemdFile('borg_qt.service')
+        self.service = SystemdFile('restic_qt.service')
         self.service.content['Service'] = {}
-        self.service.content['Unit']['Description'] = ("Runs Borg-Qt once in "
+        self.service.content['Unit']['Description'] = ("Runs Restic-Qt once in "
                                                        "the backround to take "
                                                        "a backup according to "
                                                        "the configuration.")
         self.service.content['Service']['Type'] = 'oneshot'
-        process = subprocess.run(["which", "borg_qt"], stdout=subprocess.PIPE,
+        process = subprocess.run(["which", "restic_qt"], stdout=subprocess.PIPE,
                                  encoding='utf8')
         output = process.stdout.strip()
         self.service.content['Service']['ExecStart'] = output + ' -B'
         self.service.write()
 
     def _create_timer(self, schedule_interval):
-        self.timer = SystemdFile('borg_qt.timer')
+        self.timer = SystemdFile('restic_qt.timer')
         self.timer.content['Timer'] = {}
         self.timer.content['Install'] = {}
         self.timer.content['Unit']['Description'] = ("Starts the "
-                                                     "borg_qt.service "
+                                                     "restic_qt.service "
                                                      "according to the "
                                                      "configured "
                                                      "schedule.")
@@ -340,27 +340,27 @@ class Config(QDialog):
 
     def apply_options(self):
         """Writes the changed options back into the configparser object."""
-        self.config['borgqt']['repository_path'] = (
+        self.config['resticqt']['repository_path'] = (
             self.line_edit_repository_path.text())
-        self.config['borgqt']['password'] = self.line_edit_password.text()
-        self.config['borgqt']['prefix'] = self.line_edit_prefix.text()
-        self.config['borgqt']['server'] = self.line_edit_server.text()
-        self.config['borgqt']['port'] = self.line_edit_port.text()
-        self.config['borgqt']['user'] = self.line_edit_user.text()
-        self.config['borgqt']['schedule_enabled'] = (
+        self.config['resticqt']['password'] = self.line_edit_password.text()
+        self.config['resticqt']['prefix'] = self.line_edit_prefix.text()
+        self.config['resticqt']['server'] = self.line_edit_server.text()
+        self.config['resticqt']['port'] = self.line_edit_port.text()
+        self.config['resticqt']['user'] = self.line_edit_user.text()
+        self.config['resticqt']['schedule_enabled'] = (
             str(self.check_schedule_enabled.isChecked()))
-        self.config['borgqt']['schedule_predefined_enabled'] = (
+        self.config['resticqt']['schedule_predefined_enabled'] = (
             str(self.radio_schedule_predefined_enabled.isChecked()))
-        self.config['borgqt']['schedule_custom_enabled'] = (
+        self.config['resticqt']['schedule_custom_enabled'] = (
             str(self.radio_schedule_custom_enabled.isChecked()))
-        self.config['borgqt']['schedule_time'] = (
+        self.config['resticqt']['schedule_time'] = (
             self.time_schedule_time.time().toString())
-        self.config['borgqt']['schedule_weekday'] = (
+        self.config['resticqt']['schedule_weekday'] = (
             str(self.combo_schedule_weekday.currentIndex()))
-        self.config['borgqt']['schedule_month'] = (
+        self.config['resticqt']['schedule_month'] = (
             str(self.combo_schedule_month.currentIndex()))
-        self.config['borgqt']['schedule_date'] = self.spin_schedule_date.text()
-        self.config['borgqt']['schedule_predefined_name'] = (
+        self.config['resticqt']['schedule_date'] = self.spin_schedule_date.text()
+        self.config['resticqt']['schedule_predefined_name'] = (
             self.combo_schedule_predefined.currentText())
 
         # Workaraound to get all items of a QListWidget as a list
@@ -375,13 +375,13 @@ class Config(QDialog):
 
         # Configparser doesn't know about list therefore we store them as json
         # strings
-        self.config['borgqt']['includes'] = json.dumps(includes,
+        self.config['resticqt']['includes'] = json.dumps(includes,
                                                        indent=4,
                                                        sort_keys=True)
-        self.config['borgqt']['excludes'] = json.dumps(excludes,
+        self.config['resticqt']['excludes'] = json.dumps(excludes,
                                                        indent=4,
                                                        sort_keys=True)
-        self.config['borgqt']['retention_policy_enabled'] = (
+        self.config['resticqt']['retention_policy_enabled'] = (
             str(self.check_policy_enabled.isChecked()))
         retention_policy = {}
         retention_policy['hourly'] = self.spin_policy_hourly.text()
@@ -389,7 +389,7 @@ class Config(QDialog):
         retention_policy['weekly'] = self.spin_policy_weekly.text()
         retention_policy['monthly'] = self.spin_policy_monthly.text()
         retention_policy['yearly'] = self.spin_policy_yearly.text()
-        self.config['borgqt']['retention_policy'] = json.dumps(retention_policy,
+        self.config['resticqt']['retention_policy'] = json.dumps(retention_policy,
                                                                indent=4,
                                                                sort_keys=True)
         self._set_environment_variables()
@@ -403,7 +403,7 @@ class Config(QDialog):
         else:
             active_timer_path = os.path.join(
                 os.environ['HOME'],
-                '.config/systemd/user/timer.targets.wants/borg_qt.timer')
+                '.config/systemd/user/timer.targets.wants/restic_qt.timer')
             if os.path.exists(active_timer_path):
                 self.timer.disable()
 

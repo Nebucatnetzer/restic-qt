@@ -194,6 +194,6 @@ Session.vim
 # auto-generated tag files
 tags
 
-borg-qt-env/
+restic-qt-env/
 .vscode/
 .pytest_cache/

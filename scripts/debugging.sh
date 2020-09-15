@@ -9,9 +9,9 @@ sigint_handler()
 
 trap sigint_handler SIGINT
 
-cd borg_qt
+cd restic_qt
 while true; do
-    ./borg_qt.py &
+    ./restic_qt.py &
     PID=$!
     echo "---- Press Crtl+C to stop debugging. ----"
     inotifywait -e modify -e move -e create -e delete -e attrib --exclude '.*(/\.|_flymake\.py)' -r `pwd`

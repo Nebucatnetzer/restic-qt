@@ -333,7 +333,7 @@
        </size>
       </property>
       <property name="text">
-       <string>Let's you customise the settings of Borg-Qt like which files to backup or exclude or a schedule for automatic backups.</string>
+       <string>Let's you customise the settings of Restic-Qt like which files to backup or exclude or a schedule for automatic backups.</string>
       </property>
       <property name="wordWrap">
        <bool>true</bool>

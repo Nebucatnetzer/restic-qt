@@ -239,7 +239,7 @@
     <string>Help</string>
    </property>
    <property name="toolTip">
-    <string>Open the documentation for Borg-Qt.</string>
+    <string>Open the documentation for Restic-Qt.</string>
    </property>
   </action>
   <action name="action_settings">
@@ -251,7 +251,7 @@
     <string>Settings</string>
    </property>
    <property name="toolTip">
-    <string>Open the settings window to configure Borg-Qt.</string>
+    <string>Open the settings window to configure Restic-Qt.</string>
    </property>
   </action>
  </widget>

@@ -9,8 +9,8 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtTest import QTest
 
-from borg_qt.main_window import MainWindow
-from borg_qt.helper import BorgException
+from restic_qt.main_window import MainWindow
+from restic_qt.helper import ResticException
 
 
 app = QApplication(sys.argv)
@@ -28,55 +28,55 @@ def test_absent_config_file(monkeypatch):
 
     form = MainWindow()
     monkeypatch.setattr(os.path, 'exists', mock_path)
-    with pytest.raises(BorgException):
+    with pytest.raises(ResticException):
         form.config._get_path()
 
 
 def test_empty_port(form):
-    form.config.config['borgqt']['port'] = ""
-    with pytest.raises(BorgException):
+    form.config.config['resticqt']['port'] = ""
+    with pytest.raises(ResticException):
         form.config._create_server_path()
 
 
 def test_absent_port(form):
     if 'port' in form.config.config['DEFAULT']:
         form.config.config['DEFAULT'].pop('port', None)
-    if 'port' in form.config.config['borgqt']:
-        form.config.config['borgqt'].pop('port', None)
-    with pytest.raises(BorgException):
+    if 'port' in form.config.config['resticqt']:
+        form.config.config['resticqt'].pop('port', None)
+    with pytest.raises(ResticException):
         form.config._create_server_path()
 
 
 def test_empty_user(form):
-    form.config.config['borgqt']['user'] = ""
-    with pytest.raises(BorgException):
+    form.config.config['resticqt']['user'] = ""
+    with pytest.raises(ResticException):
         form.config._create_server_path()
 
 
 def test_absent_user(form):
     if 'user' in form.config.config['DEFAULT']:
         form.config.config['DEFAULT'].pop('user', None)
-    if 'user' in form.config.config['borgqt']:
-        form.config.config['borgqt'].pop('user', None)
-    with pytest.raises(BorgException):
+    if 'user' in form.config.config['resticqt']:
+        form.config.config['resticqt'].pop('user', None)
+    with pytest.raises(ResticException):
         form.config._create_server_path()
 
 
 def test_apply_settings(form):
     form.config.apply_options()
     assert type(form.config.excludes) == list
-    assert form.config.full_path == os.environ['BORG_REPO']
-    assert form.config.password == os.environ['BORG_PASSPHRASE']
+    assert form.config.full_path == os.environ['RESTIC_REPOSITORY']
+    assert form.config.password == os.environ['RESTIC_PASSWORD']
 
 
 def test_write_config(form):
-    form.config.config['borgqt']['password'] == 'Test String'
+    form.config.config['resticqt']['password'] == 'Test String'
     form.config.write()
     config = configparser.ConfigParser()
     config.read(form.config.path)
-    for value in config['borgqt']:
-        assert (form.config.config['borgqt'][value]
-                == config['borgqt'][value])
+    for value in config['resticqt']:
+        assert (form.config.config['resticqt'][value]
+                == config['resticqt'][value])
 
 
 def test_set_form_values(form):
@@ -92,7 +92,7 @@ def test_cancel_settings(form):
         form.config.button_box.Cancel)
     QTest.mouseClick(cancel_button, Qt.LeftButton)
     assert (form.config.password
-            == form.config.config['borgqt']['password'])
+            == form.config.config['resticqt']['password'])
 
 
 def test_ok_settings(form):
@@ -104,7 +104,7 @@ def test_ok_settings(form):
     parser = configparser.ConfigParser()
     parser.read(form.config.path)
     assert (form.config.line_edit_password.text()
-            == parser['borgqt']['password'])
+            == parser['resticqt']['password'])
 
 
 def test_include_remove(form):

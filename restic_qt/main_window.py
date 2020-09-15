@@ -6,20 +6,20 @@ from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtWidgets import (QMainWindow, QFileSystemModel, QFileDialog,
                              QMessageBox)
 
-from borg_qt.config import Config
-from borg_qt.helper import (BorgException, show_error, convert_size, open_path,
+from restic_qt.config import Config
+from restic_qt.helper import (ResticException, show_error, convert_size, open_path,
                             create_path, remove_path, check_path)
-from borg_qt.help import Help
-import borg_qt.borg_interface as borg
-from borg_qt.progress import ProgressDialog
+from restic_qt.help import Help
+import restic_qt.restic_interface as restic
+from restic_qt.progress import ProgressDialog
 
 
 class MainWindow(QMainWindow):
     """The main window of the application. It provides the various functions to
-    control BorgBackup."""
+    control Restic."""
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
-        QCoreApplication.setApplicationName("borg-qt")
+        QCoreApplication.setApplicationName("restic-qt")
 
         # Load the UI file to get the dialogs layout.
         dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -28,7 +28,7 @@ class MainWindow(QMainWindow):
 
         # Set the window title after the UI has been loaded. Otherwise it gets
         # overwritten.
-        self.setWindowTitle("Borg-Qt")
+        self.setWindowTitle("Restic-Qt")
 
         # Create a Config object for storing the configuration.
         self.config = Config()
@@ -67,13 +67,13 @@ class MainWindow(QMainWindow):
             self.config.read()
             # show the help window if needed and save it's answer
             if not self.config.hide_help:
-                self.config.config['borgqt']['hide_help'] = (
+                self.config.config['resticqt']['hide_help'] = (
                     str(self.show_help()))
                 self.config.write()
             self.config._set_environment_variables()
             self._update_archives()
             self._update_repository_stats()
-        except BorgException as e:
+        except ResticException as e:
             show_error(e)
             sys.exit(1)
 
@@ -87,7 +87,7 @@ class MainWindow(QMainWindow):
         if self.mount_paths:
             for path in self.mount_paths:
                 if os.path.exists(path):
-                    os.system('borg umount ' + path)
+                    os.system('restic umount ' + path)
                     remove_path(path)
         self.mount_paths = []
 
@@ -99,12 +99,12 @@ class MainWindow(QMainWindow):
     def background_backup(self):
         self.config.read()
         self.config._set_environment_variables()
-        backup_thread = borg.BackupThread(self.config.includes,
+        backup_thread = restic.BackupThread(self.config.includes,
                                    excludes=self.config.excludes,
                                    prefix=self.config.prefix)
         backup_thread.run()
         if self.config.retention_policy_enabled:
-            prune_thread = borg.PruneThread(self.config.retention_policy)
+            prune_thread = restic.PruneThread(self.config.retention_policy)
             prune_thread.run()
 
     def get_selected_path(self, signal):
@@ -116,7 +116,7 @@ class MainWindow(QMainWindow):
         message = ("Please select a file or directory "
                    "before taking a backup.")
         if not hasattr(self, 'src_path'):
-            raise BorgException(message)
+            raise ResticException(message)
 
     def create_backup(self):
         """Creates a backup of the selected item in the treeview."""
@@ -124,21 +124,21 @@ class MainWindow(QMainWindow):
             return
         try:
             self._check_path()
-            backup_thread = borg.BackupThread([self.src_path],
+            backup_thread = restic.BackupThread([self.src_path],
                                        excludes=self.config.excludes,
                                        prefix=self.config.prefix)
             backup_dialog = ProgressDialog(backup_thread)
-            backup_dialog.label_info.setText("Borg-Qt is currently creating an"
+            backup_dialog.label_info.setText("Restic-Qt is currently creating an"
                                              " archive.")
             backup_dialog.exec_()
             if self.config.retention_policy_enabled:
-                prune_thread = borg.PruneThread(self.config.retention_policy)
+                prune_thread = restic.PruneThread(self.config.retention_policy)
                 prune_dialog = ProgressDialog(prune_thread)
-                prune_dialog.label_info.setText("Borg-Qt is currently pruning "
+                prune_dialog.label_info.setText("Restic-Qt is currently pruning "
                                                 "the repository.")
                 prune_dialog.exec_()
             self.update_ui()
-        except BorgException as e:
+        except ResticException as e:
             show_error(e)
 
     def _get_target_path(self):
@@ -166,7 +166,7 @@ class MainWindow(QMainWindow):
             archive_name = self.selected_archive
             target_path = self._get_target_path()
         except AttributeError:
-            error = BorgException("Please create or select an archive first.")
+            error = ResticException("Please create or select an archive first.")
             archive_name = None
             target_path = None
             show_error(error)
@@ -177,13 +177,13 @@ class MainWindow(QMainWindow):
             try:
                 restore_path = os.path.join(target_path, archive_name)
                 create_path(restore_path)
-                thread = borg.RestoreThread(archive_name, restore_path)
+                thread = restic.RestoreThread(archive_name, restore_path)
                 dialog = ProgressDialog(thread)
                 dialog.label_info.setText(
-                    "Borg-Qt is currently restoring a backup.")
+                    "Restic-Qt is currently restoring a backup.")
                 dialog.exec_()
                 open_path(restore_path)
-            except BorgException as e:
+            except ResticException as e:
                 show_error(e)
                 remove_path(restore_path)
 
@@ -194,7 +194,7 @@ class MainWindow(QMainWindow):
         try:
             archive_name = self.selected_archive
         except AttributeError:
-            error = BorgException("Please create or select an archive first.")
+            error = ResticException("Please create or select an archive first.")
             archive_name = None
             show_error(error)
 
@@ -203,18 +203,18 @@ class MainWindow(QMainWindow):
             # Prompt the user before continuing.
             if self.yes_no("Do you want to delete this archive?"):
                 try:
-                    thread = borg.DeleteThread(archive_name)
+                    thread = restic.DeleteThread(archive_name)
                     dialog = ProgressDialog(thread)
                     dialog.label_info.setText(
-                        "Borg-Qt is currently deleting an archive.")
+                        "Restic-Qt is currently deleting an archive.")
                     dialog.exec_()
                     self.update_ui()
-                except BorgException as e:
+                except ResticException as e:
                     show_error(e)
 
     def _update_archives(self):
         """Lists all the archive names in the UI."""
-        thread = borg.ListThread()
+        thread = restic.ListThread()
         self.list_archive.clear()
         archive_names = []
         for archive in thread.run():
@@ -226,13 +226,13 @@ class MainWindow(QMainWindow):
         try:
             self._update_archives()
             self._update_repository_stats()
-        except BorgException as e:
+        except ResticException as e:
             show_error(e)
 
     def _update_repository_stats(self):
         """Update the repository stats and display them in a human readable
         format."""
-        thread = borg.InfoThread()
+        thread = restic.InfoThread()
         stats = thread.run()
         self.label_repo_original_size.setText(
             "Original Size: "
@@ -252,7 +252,7 @@ class MainWindow(QMainWindow):
         try:
             archive_name = self.selected_archive
         except AttributeError:
-            error = BorgException("Please create or select an archive first.")
+            error = ResticException("Please create or select an archive first.")
             archive_name = None
             show_error(error)
 
@@ -262,12 +262,12 @@ class MainWindow(QMainWindow):
             create_path(mount_path)
             # only continue if the mount_path is writeable
             if os.access(mount_path, os.W_OK):
-                thread = borg.MountThread(archive_name, mount_path)
+                thread = restic.MountThread(archive_name, mount_path)
                 try:
                     thread.run()
                     self.mount_paths.append(mount_path)
                     open_path(mount_path)
-                except BorgException as e:
+                except ResticException as e:
                     show_error(e)
                     remove_path(mount_path)
             else:
@@ -288,7 +288,7 @@ class MainWindow(QMainWindow):
 
         Args:
                 question (str) The question to display to the user."""
-        button_reply = QMessageBox.question(self, 'Borg-Qt', question,
+        button_reply = QMessageBox.question(self, 'Restic-Qt', question,
                                             QMessageBox.Yes |
                                             QMessageBox.No, QMessageBox.No)
         if button_reply == QMessageBox.Yes:

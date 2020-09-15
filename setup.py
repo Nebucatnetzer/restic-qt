@@ -10,13 +10,13 @@ import os
 from setuptools import find_packages, setup
 
 # Package meta-data.
-NAME = 'borg_qt'
-DESCRIPTION = 'A graphical frontend for BorgBackup.'
-URL = 'https://github.com/borg-qt/borg-qt.git'
+NAME = 'restic_qt'
+DESCRIPTION = 'A graphical frontend for Restic.'
+URL = 'https://github.com/restic-qt/restic-qt.git'
 EMAIL = ''
 AUTHOR = 'Andreas Zweili'
 REQUIRES_PYTHON = '>=3.6.0'
-VERSION = '2019.05.30'
+VERSION = '2020.09.15'
 
 # What packages are required for this module to be executed?
 REQUIRED = [
@@ -81,13 +81,13 @@ setup(
         'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy'
     ],
-    entry_points={                                                              
-        'gui_scripts': [                                                    
-            'borg_qt=borg_qt.__main__:main',                                             
-        ],                                                                      
+    entry_points={
+        'gui_scripts': [
+            'restic_qt=restic_qt.__main__:main',
+        ],
     },
 )

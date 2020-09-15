@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtGui import QDesktopServices
 
 
-class BorgException(Exception):
+class ResticException(Exception):
     pass
 
 
@@ -26,7 +26,7 @@ def show_error(e):
     message = QMessageBox()
     message.setIcon(QMessageBox.Warning)
     message.setText("Error")
-    message.setWindowTitle("Borg-Qt Error")
+    message.setWindowTitle("Restic-Qt Error")
     message.setInformativeText(e.args[0])
     message.exec_()
 

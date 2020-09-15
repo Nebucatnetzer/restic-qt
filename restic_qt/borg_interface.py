@@ -3,11 +3,11 @@ import json
 
 from PyQt5.QtCore import QThread
 
-from borg_qt.helper import BorgException, show_error
+from restic_qt.helper import ResticException, show_error
 
 
-class BorgQtThread(QThread):
-    """Provides the base for interfacing with borg. The method
+class ResticQtThread(QThread):
+    """Provides the base for interfacing with restic. The method
     self.create_command needs to be implemented on each child class in order to
     make it work."""
     def __init__(self):
@@ -20,7 +20,7 @@ class BorgQtThread(QThread):
         self.json_err = None
 
     def create_process(self):
-        """Creates the process which executes borg."""
+        """Creates the process which executes restic."""
 
         # self.create_command() needs to be implemented on each subclass.
         self.create_command()
@@ -36,21 +36,21 @@ class BorgQtThread(QThread):
 
     def process_json_error(self, json_err):
         """Looks in the returned json error string for errors and provides them
-        as BorgException in case there are any. Ignores errors about stale
-        locks of borg."""
+        as ResticException in case there are any. Ignores errors about stale
+        locks of restic."""
         if json_err:
             error = json_err.splitlines()[0]
             if 'stale' in error:
                 return
             else:
                 err = json.loads(error)
-                raise BorgException(err['message'])
+                raise ResticException(err['message'])
 
 
-class ListThread(BorgQtThread):
+class ListThread(ResticQtThread):
     """Returns a list of all archives in the repository."""
     def create_command(self):
-        self.command = ['borg', 'list', '--log-json', '--json']
+        self.command = ['restic', 'list', '--log-json', '--json']
 
     def run(self):
         super().run()
@@ -65,10 +65,10 @@ class ListThread(BorgQtThread):
                 self.archives.append(i)
 
 
-class InfoThread(BorgQtThread):
+class InfoThread(ResticQtThread):
     """Return the statistics about the current repository."""
     def create_command(self):
-        self.command = ['borg', 'info', '--log-json', '--json']
+        self.command = ['restic', 'info', '--log-json', '--json']
 
     def run(self):
         super().run()
@@ -81,8 +81,8 @@ class InfoThread(BorgQtThread):
             self.stats = output['cache']['stats']
 
 
-class BackupThread(BorgQtThread):
-    """Creates a backup with borg.
+class BackupThread(ResticQtThread):
+    """Creates a backup with restic.
 
     Args:
         prefix (str) the prefix for the archive name.
@@ -96,7 +96,7 @@ class BackupThread(BorgQtThread):
         super().__init__()
 
     def create_command(self):
-        self.command = ['borg', 'create', '--log-json', '--json',
+        self.command = ['restic', 'create', '--log-json', '--json',
                         ('::'
                          + self.prefix
                          + '{now:%Y-%m-%d_%H:%M:%S,%f}')]
@@ -109,7 +109,7 @@ class BackupThread(BorgQtThread):
         self.p.wait()
         try:
             self.process_json_error(self.json_err)
-        except BorgException as e:
+        except ResticException as e:
             show_error(e)
             self.stop()
 
@@ -121,7 +121,7 @@ class BackupThread(BorgQtThread):
             self.prefix = ""
 
     def _process_excludes(self, excludes):
-        """Pairs every exclude with the required option for borg."""
+        """Pairs every exclude with the required option for restic."""
         processed_items = []
         if excludes:
             for item in excludes:
@@ -131,8 +131,8 @@ class BackupThread(BorgQtThread):
             self.excludes = processed_items
 
 
-class RestoreThread(BorgQtThread):
-    """Restores a backup with borg.
+class RestoreThread(ResticQtThread):
+    """Restores a backup with restic.
 
     Args:
         archive_name (str) the name of the archive to restore.
@@ -144,11 +144,11 @@ class RestoreThread(BorgQtThread):
         super().__init__()
 
     def create_command(self):
-        self.command = ['borg', 'extract', '--log-json',
+        self.command = ['restic', 'extract', '--log-json',
                         ('::' + self.archive_name)]
 
     def create_process(self):
-        """The create_process needs to get overwritten because borg restores
+        """The create_process needs to get overwritten because restic restores
         the archive into the current folder. Therefore the process needs to cd
         into the target path."""
         self.create_command()
@@ -160,7 +160,7 @@ class RestoreThread(BorgQtThread):
                                   encoding='utf8')
 
 
-class DeleteThread(BorgQtThread):
+class DeleteThread(ResticQtThread):
     """Deletes an archive from the repository.
 
     Args:
@@ -171,11 +171,11 @@ class DeleteThread(BorgQtThread):
         super().__init__()
 
     def create_command(self):
-        self.command = ['borg', 'delete', '--log-json',
+        self.command = ['restic', 'delete', '--log-json',
                         ('::' + self.archive_name)]
 
 
-class MountThread(BorgQtThread):
+class MountThread(ResticQtThread):
     """Mounts an archive at the given path.
 
     Args:
@@ -188,11 +188,11 @@ class MountThread(BorgQtThread):
         super().__init__()
 
     def create_command(self):
-        self.command = ['borg', 'mount', '--log-json',
+        self.command = ['restic', 'mount', '--log-json',
                         ('::' + self.archive_name), self.mount_path]
 
 
-class PruneThread(BorgQtThread):
+class PruneThread(ResticQtThread):
     """Prunes the repository according to the given retention policy.
 
     Args:
@@ -203,7 +203,7 @@ class PruneThread(BorgQtThread):
         super().__init__()
 
     def create_command(self):
-        self.command = ['borg', 'prune', '--log-json']
+        self.command = ['restic', 'prune', '--log-json']
         self.command.extend(self.policy)
 
     def _process_policy(self, raw_policy):

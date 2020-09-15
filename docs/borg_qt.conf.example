@@ -35,13 +35,13 @@ retention_policy = {
     "yearly": "1"
     }
 
-[borgqt]
+[resticqt]
 includes = [
 	    "/home/username/"
 	]
-repository_path = /tmp/test-borgqt
+repository_path = /tmp/test-resticqt
 password = foo
 prefix = notebook
 server = 192.168.1.1
 port = 22
-user = borg
+user = restic
