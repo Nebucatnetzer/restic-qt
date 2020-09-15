@@ -180,13 +180,13 @@ class Config(QDialog):
             raise ResticException("User is missing in config.")
         if not self._return_single_option('port'):
             raise ResticException("Port is missing in config.")
-        server_path = ('sftp:'
+        server_path = ('sftp://'
                        + self.config['resticqt']['user']
                        + "@"
                        + self.config['resticqt']['server']
                        + ":"
                        + self.config['resticqt']['port']
-                       + "/"
+                       + ":/"
                        + self.config['resticqt']['repository_path'])
         return server_path
 
