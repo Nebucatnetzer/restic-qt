@@ -1,5 +1,6 @@
 from datetime import datetime
 import json
+import socket
 import subprocess
 
 from PyQt5.QtCore import QThread
@@ -14,6 +15,7 @@ class ResticQtThread(QThread):
 
     def __init__(self):
         super().__init__()
+        self.host = socket.gethostname()
         self.create_process()
 
     def stop(self):
@@ -48,7 +50,7 @@ class ListThread(ResticQtThread):
     """Returns a list of all archives in the repository."""
 
     def create_command(self):
-        self.command = ['restic', 'snapshots', '--json']
+        self.command = ['restic', 'snapshots', '--host', self.host, '--json']
 
     def run(self):
         super().run()
@@ -68,7 +70,8 @@ class InfoThread(ResticQtThread):
     """Return the statistics about the current repository."""
 
     def create_command(self):
-        self.command = ['restic', 'stats', 'latest', '--json']
+        self.command = ['restic', 'stats', '--host', self.host, 'latest',
+                        '--json']
 
     def run(self):
         super().run()
