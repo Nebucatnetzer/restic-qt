@@ -241,14 +241,6 @@ class MainWindow(QMainWindow):
             "Original Size: "
             + convert_size(stats['total_size']))
 
-        self.label_repo_compressed_size.setText(
-            "Compressed Size: "
-            + convert_size(stats['total_csize']))
-
-        self.label_repo_deduplicated_size.setText(
-            "Deduplicated Size: "
-            + convert_size(stats['unique_csize']))
-
     def mount_backup(self):
         """Mount the selected archive in the tmp directory. If it succeeds the
         mount_path gets written to a property of the main_window."""

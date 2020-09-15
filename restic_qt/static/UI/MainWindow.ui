@@ -107,20 +107,6 @@
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QLabel" name="label_repo_compressed_size">
-       <property name="text">
-        <string>Compressed Size:</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_repo_deduplicated_size">
-       <property name="text">
-        <string>Deduplicated Size:</string>
-       </property>
-      </widget>
-     </item>
     </layout>
    </widget>
    <widget class="QWidget" name="verticalLayoutWidget_3">
