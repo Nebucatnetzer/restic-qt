@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import (QMainWindow, QFileSystemModel, QFileDialog,
 
 from restic_qt.config import Config
 from restic_qt.helper import (ResticException, show_error, convert_size, open_path,
-                            create_path, remove_path, check_path)
+                              create_path, remove_path, check_path)
 from restic_qt.help import Help
 import restic_qt.restic_interface as restic
 from restic_qt.progress import ProgressDialog
@@ -17,6 +17,7 @@ from restic_qt.progress import ProgressDialog
 class MainWindow(QMainWindow):
     """The main window of the application. It provides the various functions to
     control Restic."""
+
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
         QCoreApplication.setApplicationName("restic-qt")
@@ -100,8 +101,8 @@ class MainWindow(QMainWindow):
         self.config.read()
         self.config._set_environment_variables()
         backup_thread = restic.BackupThread(self.config.includes,
-                                   excludes=self.config.excludes,
-                                   prefix=self.config.prefix)
+                                            excludes=self.config.excludes,
+                                            prefix=self.config.prefix)
         backup_thread.run()
         if self.config.retention_policy_enabled:
             prune_thread = restic.PruneThread(self.config.retention_policy)
@@ -125,8 +126,8 @@ class MainWindow(QMainWindow):
         try:
             self._check_path()
             backup_thread = restic.BackupThread([self.src_path],
-                                       excludes=self.config.excludes,
-                                       prefix=self.config.prefix)
+                                                excludes=self.config.excludes,
+                                                prefix=self.config.prefix)
             backup_dialog = ProgressDialog(backup_thread)
             backup_dialog.label_info.setText("Restic-Qt is currently creating an"
                                              " archive.")
@@ -166,7 +167,8 @@ class MainWindow(QMainWindow):
             archive_name = self.selected_archive
             target_path = self._get_target_path()
         except AttributeError:
-            error = ResticException("Please create or select an archive first.")
+            error = ResticException(
+                "Please create or select an archive first.")
             archive_name = None
             target_path = None
             show_error(error)
@@ -194,7 +196,8 @@ class MainWindow(QMainWindow):
         try:
             archive_name = self.selected_archive
         except AttributeError:
-            error = ResticException("Please create or select an archive first.")
+            error = ResticException(
+                "Please create or select an archive first.")
             archive_name = None
             show_error(error)
 
@@ -218,7 +221,7 @@ class MainWindow(QMainWindow):
         self.list_archive.clear()
         archive_names = []
         for archive in thread.run():
-            archive_names.append(archive['name'])
+            archive_names.append(archive['short_id'])
         self.list_archive.addItems(archive_names)
 
     def update_ui(self):
@@ -252,7 +255,8 @@ class MainWindow(QMainWindow):
         try:
             archive_name = self.selected_archive
         except AttributeError:
-            error = ResticException("Please create or select an archive first.")
+            error = ResticException(
+                "Please create or select an archive first.")
             archive_name = None
             show_error(error)
 

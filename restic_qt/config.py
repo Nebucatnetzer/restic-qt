@@ -180,12 +180,13 @@ class Config(QDialog):
             raise ResticException("User is missing in config.")
         if not self._return_single_option('port'):
             raise ResticException("Port is missing in config.")
-        server_path = ('ssh://'
+        server_path = ('sftp:'
                        + self.config['resticqt']['user']
                        + "@"
                        + self.config['resticqt']['server']
                        + ":"
                        + self.config['resticqt']['port']
+                       + "/"
                        + self.config['resticqt']['repository_path'])
         return server_path
 
@@ -376,11 +377,11 @@ class Config(QDialog):
         # Configparser doesn't know about list therefore we store them as json
         # strings
         self.config['resticqt']['includes'] = json.dumps(includes,
-                                                       indent=4,
-                                                       sort_keys=True)
+                                                         indent=4,
+                                                         sort_keys=True)
         self.config['resticqt']['excludes'] = json.dumps(excludes,
-                                                       indent=4,
-                                                       sort_keys=True)
+                                                         indent=4,
+                                                         sort_keys=True)
         self.config['resticqt']['retention_policy_enabled'] = (
             str(self.check_policy_enabled.isChecked()))
         retention_policy = {}
@@ -390,8 +391,8 @@ class Config(QDialog):
         retention_policy['monthly'] = self.spin_policy_monthly.text()
         retention_policy['yearly'] = self.spin_policy_yearly.text()
         self.config['resticqt']['retention_policy'] = json.dumps(retention_policy,
-                                                               indent=4,
-                                                               sort_keys=True)
+                                                                 indent=4,
+                                                                 sort_keys=True)
         self._set_environment_variables()
 
         # create and enable the required systemd files

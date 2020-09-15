@@ -1,5 +1,6 @@
-import subprocess
+from datetime import datetime
 import json
+import subprocess
 
 from PyQt5.QtCore import QThread
 
@@ -10,6 +11,7 @@ class ResticQtThread(QThread):
     """Provides the base for interfacing with restic. The method
     self.create_command needs to be implemented on each child class in order to
     make it work."""
+
     def __init__(self):
         super().__init__()
         self.create_process()
@@ -17,7 +19,7 @@ class ResticQtThread(QThread):
     def stop(self):
         """Kill the process when the thread stops."""
         self.p.kill()
-        self.json_err = None
+        self.error = None
 
     def create_process(self):
         """Creates the process which executes restic."""
@@ -30,27 +32,23 @@ class ResticQtThread(QThread):
                                   encoding='utf8')
 
     def run(self):
-        self.json_output, self.json_err = self.p.communicate()
+        self.json_output, self.error = self.p.communicate()
         self.p.wait()
-        self.process_json_error(self.json_err)
+        self.process_error(self.error)
 
-    def process_json_error(self, json_err):
+    def process_error(self, error):
         """Looks in the returned json error string for errors and provides them
         as ResticException in case there are any. Ignores errors about stale
         locks of restic."""
-        if json_err:
-            error = json_err.splitlines()[0]
-            if 'stale' in error:
-                return
-            else:
-                err = json.loads(error)
-                raise ResticException(err['message'])
+        if error:
+            raise ResticException(error)
 
 
 class ListThread(ResticQtThread):
     """Returns a list of all archives in the repository."""
+
     def create_command(self):
-        self.command = ['restic', 'list', '--log-json', '--json']
+        self.command = ['restic', 'snapshots', '--json']
 
     def run(self):
         super().run()
@@ -61,14 +59,16 @@ class ListThread(ResticQtThread):
         self.archives = []
         if self.json_output:
             output = json.loads(self.json_output)
-            for i in output['archives']:
-                self.archives.append(i)
+            if output:
+                for i in output:
+                    self.archives.append(i)
 
 
 class InfoThread(ResticQtThread):
     """Return the statistics about the current repository."""
+
     def create_command(self):
-        self.command = ['restic', 'info', '--log-json', '--json']
+        self.command = ['restic', 'stats', '--json']
 
     def run(self):
         super().run()
@@ -89,6 +89,7 @@ class BackupThread(ResticQtThread):
         includes (list) a list of all the paths to backup.
         excludes (list) a list of all the paths to exclude from the backup.
     """
+
     def __init__(self, includes, excludes=None, prefix=None):
         self.includes = includes
         self._process_excludes(excludes)
@@ -96,19 +97,16 @@ class BackupThread(ResticQtThread):
         super().__init__()
 
     def create_command(self):
-        self.command = ['restic', 'create', '--log-json', '--json',
-                        ('::'
-                         + self.prefix
-                         + '{now:%Y-%m-%d_%H:%M:%S,%f}')]
+        self.command = ['restic', 'backup', '--json']
         self.command.extend(self.includes)
         if self.excludes:
             self.command.extend(self.excludes)
 
     def run(self):
-        self.json_output, self.json_err = self.p.communicate()
+        self.json_output, self.error = self.p.communicate()
         self.p.wait()
         try:
-            self.process_json_error(self.json_err)
+            self.process_error(self.error)
         except ResticException as e:
             show_error(e)
             self.stop()
@@ -138,14 +136,15 @@ class RestoreThread(ResticQtThread):
         archive_name (str) the name of the archive to restore.
         restore_path (str) the path where to restore should get stored at.
     """
+
     def __init__(self, archive_name, restore_path):
         self.archive_name = archive_name
         self.restore_path = restore_path
         super().__init__()
 
     def create_command(self):
-        self.command = ['restic', 'extract', '--log-json',
-                        ('::' + self.archive_name)]
+        self.command = ['restic', 'restore', '--json', self.archive_name,
+                        '--target', self.restore_path]
 
     def create_process(self):
         """The create_process needs to get overwritten because restic restores
@@ -153,7 +152,6 @@ class RestoreThread(ResticQtThread):
         into the target path."""
         self.create_command()
         self.p = subprocess.Popen(self.command,
-                                  cwd=self.restore_path,
                                   stdin=subprocess.PIPE,
                                   stdout=subprocess.PIPE,
                                   stderr=subprocess.PIPE,
@@ -166,13 +164,13 @@ class DeleteThread(ResticQtThread):
     Args:
         archive_name (str) the name of the archive to delete.
     """
+
     def __init__(self, archive_name):
         self.archive_name = archive_name
         super().__init__()
 
     def create_command(self):
-        self.command = ['restic', 'delete', '--log-json',
-                        ('::' + self.archive_name)]
+        self.command = ['restic', 'forget', '--json', self.archive_name]
 
 
 class MountThread(ResticQtThread):
@@ -182,14 +180,15 @@ class MountThread(ResticQtThread):
         archive_name (str) the name of the archive to restore.
         mount_path (str) the target path to mount the archive at.
     """
+
     def __init__(self, archive_name, mount_path):
         self.archive_name = archive_name
         self.mount_path = mount_path
         super().__init__()
 
     def create_command(self):
-        self.command = ['restic', 'mount', '--log-json',
-                        ('::' + self.archive_name), self.mount_path]
+        self.command = ['restic', 'mount', '--json', self.archive_name,
+                        self.mount_path]
 
 
 class PruneThread(ResticQtThread):
@@ -198,12 +197,13 @@ class PruneThread(ResticQtThread):
     Args:
         policy (dict) the name of the archive to restore.
     """
+
     def __init__(self, policy):
         self.policy = self._process_policy(policy)
         super().__init__()
 
     def create_command(self):
-        self.command = ['restic', 'prune', '--log-json']
+        self.command = ['restic', 'forget', '--json']
         self.command.extend(self.policy)
 
     def _process_policy(self, raw_policy):

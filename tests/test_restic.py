@@ -15,20 +15,22 @@ app = QApplication(sys.argv)
 def test_backup(repository):
     backup_thread = restic.BackupThread(['.'])
     backup_thread.run()
-    output = subprocess.check_output(['restic', 'list'], encoding='utf8')
-    assert -1 != output.find(strftime('%Y-%m-%d_%H:'))
+    output = subprocess.check_output(['restic', 'snapshots', '--json'],
+                                     encoding='utf8')
+    assert -1 != output.find(str(os.path.realpath('.')))
 
 
-def test_backup_with_prefix(repository):
-    backup_thread = restic.BackupThread(['.'], prefix='test')
+def test_list(repository):
+    backup_thread = restic.BackupThread(['.'])
     backup_thread.run()
-    output = subprocess.check_output(['restic', 'list'], encoding='utf8')
-    assert -1 != output.find(strftime('test_%Y-%m-%d_%H:'))
+    list_thread = restic.ListThread()
+    output = list_thread.run()
+    assert str(os.path.realpath('.')) == output[0]['paths'][0]
 
 
 def test_restore(target_path, archives):
     archive_list = archives
-    archive_name = archive_list[0]['name']
+    archive_name = archive_list[0]['short_id']
     restore_path = os.path.join(target_path, archive_name)
     create_path(restore_path)
     thread = restic.RestoreThread(archive_name, restore_path)
@@ -39,7 +41,7 @@ def test_restore(target_path, archives):
 
 def test_delete(target_path, archives):
     archive_list = archives
-    archive_name = archive_list[0]['name']
+    archive_name = archive_list[0]['short_id']
     thread = restic.DeleteThread(archive_name)
     thread.run()
     list_thread = restic.ListThread()
@@ -47,16 +49,16 @@ def test_delete(target_path, archives):
     assert archive_name not in repo_archives
 
 
-def test_mount(target_path, archives):
-    archive_list = archives
-    archive_name = archive_list[0]['name']
-    mount_path = os.path.join(target_path, archive_name)
-    create_path(mount_path)
-    thread = restic.MountThread(archive_name, mount_path)
-    thread.run()
-    assert os.path.exists(
-        os.path.join(mount_path, os.path.realpath(__file__)))
-    os.system('restic umount ' + mount_path)
+# def test_mount(target_path, archives):
+#     archive_list = archives
+#     archive_name = archive_list[0]['short_id']
+#     mount_path = os.path.join(target_path, archive_name)
+#     create_path(mount_path)
+#     thread = restic.MountThread(archive_name, mount_path)
+#     thread.run()
+#     assert os.path.exists(
+#         os.path.join(mount_path, os.path.realpath(__file__)))
+#     os.system('restic umount ' + mount_path)
 
 
 def test_prune(repository, create_archive):
@@ -66,4 +68,3 @@ def test_prune(repository, create_archive):
     list_thread = restic.ListThread()
     repo_archives = list_thread.run()
     assert len(archive_list) > len(repo_archives)
-
