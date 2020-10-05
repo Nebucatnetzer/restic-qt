@@ -12,6 +12,7 @@ from restic_qt.helper import (ResticException, show_error, convert_size, open_pa
 from restic_qt.help import Help
 import restic_qt.restic_interface as restic
 from restic_qt.progress import ProgressDialog
+from restic_qt.restic_model import ResticTableModel
 
 
 class MainWindow(QMainWindow):
@@ -72,8 +73,7 @@ class MainWindow(QMainWindow):
                     str(self.show_help()))
                 self.config.write()
             self.config._set_environment_variables()
-            self._update_archives()
-            self._update_repository_stats()
+            self._create_table()
         except ResticException as e:
             show_error(e)
             sys.exit(1)
@@ -91,6 +91,12 @@ class MainWindow(QMainWindow):
                     os.system('restic umount ' + path)
                     remove_path(path)
         self.mount_paths = []
+
+    def _create_table(self):
+        tabledata = self._update_archives()
+        print(tabledata)
+        tablemodel = ResticTableModel(tabledata, self)
+        self.list_archive.setModel(tablemodel)
 
     def show_settings(self):
         """Display the settings dialog."""
@@ -218,11 +224,15 @@ class MainWindow(QMainWindow):
     def _update_archives(self):
         """Lists all the archive names in the UI."""
         thread = restic.ListThread()
-        self.list_archive.clear()
-        archive_names = []
+        archives = []
+        snapshot_dates = []
+        snapshot_ids = []
         for archive in thread.run():
-            archive_names.append(archive['short_id'])
-        self.list_archive.addItems(archive_names)
+            snapshot_dates.append(archive['time'])
+            snapshot_ids.append(archive['short_id'])
+        archives.append(snapshot_dates)
+        archives.append(snapshot_ids)
+        return archives
 
     def update_ui(self):
         """Updates the archive list and repository stats in the UI."""
